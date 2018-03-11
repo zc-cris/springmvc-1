@@ -4,18 +4,42 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	id="WebApp_ID" version="3.1">
 
+	<!-- 
+		配置 org.springframework.web.filter.HiddenHttpMethodFilter ：可以把 post 请求转为 delete 或者 put请求
+	 -->
+	<filter>
+		<filter-name>hiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>hiddenHttpMethodFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
 	<!-- 配置DispatcherServlet -->
 	<servlet>
 		<servlet-name>springDispatcherServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<!-- 配置DispatcherServlet的一个初始化参数：配置springMVC的配置文件的位置和名称 -->
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:springmvc.xml</param-value>
-		</init-param>
+		<!-- 配置DispatcherServlet的一个初始化参数：配置springMVC的配置文件的位置和名称 实际上是可以不通过 contextConfigLocation 
+			参数来配置 springMVC 的配置文件的，可以使用默认的 默认的配置文件为：/WEB-INF/<servlet-name>-servlet.xml -->
+		<!-- <init-param> <param-name>contextConfigLocation</param-name> <param-value>classpath:springmvc.xml</param-value> 
+			</init-param> -->
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
+	<!-- 注意！！！ springDispatcherServlet 的 <url-pattern> 映射值不能设置为/*，只能为/，否则访问静态资源会报404错误 
+		这个问题我在 stackOverFlow 上查到有人这样解释： 
+			1. The / doesn't override any other servlet. 
+			It only replaces the servletcontainer's builtin default servlet for all requests 
+			which doesn't match any other registered servlet 
+			
+			2. The /* on a servlet overrides 
+			all other servlets, including all servlets provided by the servletcontainer 
+			such as the default servlet and the JSP servlet. Whatever request you fire, 
+			it will end up in that servlet. This is normally only invoked on static resources 
+			(CSS/JS/image/etc) and directory listings 
+			具体的就不解释了，英文应该都看的懂吧... 
+	-->
 	<servlet-mapping>
 		<servlet-name>springDispatcherServlet</servlet-name>
 		<url-pattern>/</url-pattern>
