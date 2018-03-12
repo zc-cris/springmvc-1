@@ -1,20 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
+
+	<!-- <mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg value="UTF-8" />
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven> -->
+	
 	<!-- 配置自动扫描的注解包 -->
 	<context:component-scan base-package="com.zc.cris.springMVC"></context:component-scan>
 
-	<!-- 配置视图解析器：即如何把 handler 方法返回值解析为实际的物理视图 -->
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<!-- 配置视图解析器：即如何把 handler 方法返回值解析为实际的物理视图，order属性值为int类型最大值，即默认最后进行视图解析的
+		视图解析器
+	 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean>
+	<!-- 配置 BeanNameViewResolver 视图解析器：使用视图的名字来解析自定义的视图类  -->
+	<!-- 通过order 属性来定义视图解析器的优先级，order值越小，越优先 -->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="100"></property>
+	</bean>
+	
+	
+	<!-- 配置国际化资源文件 -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="i18n"></property>
+	</bean>
+	
+	<!-- 配置直接转发的页面，可以直接通过url访问，不需要经过 controller 的目标方法，但是必须配置mvc：annotation-driven 标签 -->
+	<mvc:view-controller path="/success" view-name="success"/>
+	<!-- 在实际开发中，还需要配置mvc：annotation-driven 标签 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+	
 
 
 </beans>
