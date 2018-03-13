@@ -31,6 +31,13 @@ public class SpringMVCTest {
 
 	private static final String SUCCESS = "success";
 
+	@RequestMapping("testRedirect")
+	public String testRedirect() {
+		System.out.println("testRedirect");
+		return "redirect:/index.jsp";
+	}
+	
+	
 	@RequestMapping("testMyView")
 	public String testMyView() {
 		System.out.println("testMyView");
